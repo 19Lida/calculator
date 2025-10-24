@@ -1,26 +1,73 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* на всю висоту вікна */
+  gap: 20px;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
 body {
-  background: #f0f0f0;
+  background: #807b7b;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
   font-family: "Segoe UI", sans-serif;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+/* 🌞 Світла тема */
+body.light {
+  background-color: #fff;
+  color: #222;
 }
 
+/* 🌙 Темна тема */
+body.dark {
+  background-color: #343333;
+  color: #f1f1f1;
+}
 .calculator {
-  background: #222;
+  width: 320px;
+  margin: 40px auto;
+  /* background: #222; */
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.5s ease, box-shadow 0.5s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s ease forwards;
+  animation-delay: 0.4s;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 🌞 Світла тема */
+body.light .calculator {
+  background-color: #9b9a9a;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 🌙 Темна тема */
+body.dark .calculator {
+  background-color: #1e1e1e;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
 }
 .expression {
-  color: #999;
+  color: #f0e9e9;
   font-size: 1rem;
   text-align: right;
   min-height: 20px;
   margin-bottom: 5px;
- 
 }
 .display {
   background: #000;
@@ -37,7 +84,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 60px);
   gap: 10px;
-   margin-top: 20px;
+  margin-top: 20px;
 }
 
 button {
@@ -46,23 +93,23 @@ button {
   border: none;
   border-radius: 5px;
   background: #444;
-  color: #fff;
+  color: #c57417;
   cursor: pointer;
   transition: background 0.2s;
-   transition: all 0.15s ease-in-out;
+  transition: all 0.15s ease-in-out;
 }
 
 button:hover {
   /* background: #666; */
-   background-color: #555;
+  background-color: #555;
   transform: scale(1.05);
 }
 button.active {
   transform: scale(0.95);
-  background-color: #86cfad;  /* яскраво-зелений */
+  background-color: #99854e; /* яскраво-зелений */
   color: black;
   font-weight: bold;
-  box-shadow: 0 0 8px #75caa3;
+  box-shadow: 0 0 8px #b79116;
   transition: 0.2s ease;
   transform: scale(1.07);
 }
@@ -72,21 +119,104 @@ button.active:hover {
 }
 /* 🔹 Кнопка дорівнює (=) виділяється */
 button.equals {
-  background: #008f39;
+  background: #3a7933;
   color: black;
   font-weight: bold;
-  
 }
 
 button.equals:hover {
-  background: #00b84d;
+  background: #5ea97e;
 }
 button.backspace {
-  background-color: #ff5555;
+  background-color: #cf6e6e;
   color: white;
   font-weight: bold;
 }
 
 button.backspace:hover {
   background-color: #ff7777;
+}
+/* 🔘 Кнопка перемикача теми */
+.theme-toggle {
+  padding-left: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 16px;
+  background: var(--btn-bg, rgba(255, 255, 255, 0.15));
+  border: none;
+  backdrop-filter: blur(8px); /* ефект скла */
+  padding: 10px 14px;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: fadeDown 0.8s ease forwards;
+}
+
+/* .theme-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding-left: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+   margin-bottom: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  color: inherit;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(6px);
+  z-index: 2;
+  position: relative; 
+} */
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  /* background-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+  animation: pulse 1.8s ease-in-out infinite; */
+}
+/* @keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0px rgba(255, 255, 255, 0);
+  }
+  50% {
+    transform: scale(1.07);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0px rgba(255, 255, 255, 0);
+  }
+} */
+body.light .theme-toggle {
+  background: rgba(0, 0, 0, 0.05);
+  border: 2px solid rgba(0, 0, 0, 0.3);
+}
+body.light .theme-toggle:hover {
+  /* background-color: rgba(0, 0, 0, 0.01);
+  border: 2px solid rgba(0, 0, 0, 0.3); */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+}
+
+body.dark .theme-toggle:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+/* .....додала при останній зміні */
+body.dark .theme-toggle:hover {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
 }
