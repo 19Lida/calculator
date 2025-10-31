@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
@@ -9,36 +9,27 @@ function App() {
   const [expression, setExpression] = useState("");
   const [theme, setTheme] = useState(() => {
     // Перевіряємо, чи є збережена тема у localStorage
-    return localStorage.getItem("theme") || "light";
+    return localStorage.getItem("theme") || "dark";
   });
-  useEffect(() => {
-    document.body.className = theme; // додаємо клас до body
-    localStorage.setItem("theme", theme); // зберігаємо вибір
-  }, [theme]);
+
   // 🧩 Функція для перемикання теми
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
   };
-  // 🧠 useEffect покаже, коли змінюється будь-який стан
-  useEffect(() => {
-    console.log("🟢 State updated:");
-    console.log("display:", display);
-    console.log("prevValue:", prevValue);
-    console.log("operation:", operation);
-    console.log("overwrite:", overwrite);
-    console.log("--------------------------");
-  }, [display, prevValue, operation, overwrite]);
 
   // функція для цифр
   const appendNumber = (digit) => {
+    //  overwrite = true означає “перезаписати” екран наступним введенням
     if (overwrite) {
       setDisplay(digit);
-      setOverwrite(false);
+      setOverwrite(false); //повертає режим "дописування" не перезаписуй число
     } else {
       setDisplay(display === "0" ? digit : display + digit);
     }
 
-    // 🔹 Це важливо: щоб при наборі другого числа зверху не зникав вираз.
+    // 🔹 щоб при наборі другого числа зверху не зникав вираз.
     // Додаємо число до виразу тільки якщо вже є операція
     if (prevValue !== null && operation !== null) {
       setExpression(
@@ -50,25 +41,33 @@ function App() {
   };
 
   const chooseOperation = (op) => {
-    console.log(`➕ Вибрали операцію: ${op}`);
+    // 🟢 Якщо ще немає попереднього значення — зберігаємо поточне
     if (prevValue === null) {
       setPrevValue(display);
-      setExpression(`${display} ${op}`); // ✅ показує одразу 7 +
-    } else if (!overwrite) {
-      const value = compute();
-      setPrevValue(value);
-      setDisplay(value);
-      setExpression(`${value} ${op} `);
-    } else {
+      setOperation(op);
       setExpression(`${display} ${op}`);
-      setPrevValue(display);
+      setOverwrite(true); // перезаписуй попереднє число
+      return;
     }
+
+    // 🟢 Якщо ми щойно вибрали операцію і не ввели нове число — просто змінюємо її
+    if (overwrite) {
+      setOperation(op);
+      setExpression(`${prevValue} ${op}`);
+      return;
+    }
+
+    // 🟢 Інакше обчислюємо попередній вираз
+    const value = compute();
+    setPrevValue(value);
+    setDisplay(value);
     setOperation(op);
-    setOverwrite(true);
+    setExpression(`${value} ${op}`);
+    setOverwrite(true); // перезаписуй попереднє число
   };
 
   const compute = () => {
-    console.log("🧮 Обчислення виконується...");
+    // console.log("🧮 Обчислення виконується...");
     if (operation === null || prevValue === null) return display;
 
     const curr = parseFloat(display);
@@ -92,26 +91,26 @@ function App() {
         return display;
     }
 
-    console.log(`✅ Результат: ${result}`);
+    // console.log(`✅ Результат: ${result}`);
     return result.toString();
   };
 
   // Натиснули '='
   const handleEquals = () => {
-    console.log("🟰 Натиснули '='");
+    // console.log("🟰 Натиснули '='");
     if (operation === null || prevValue === null) return;
     const value = compute();
     // Показуємо повний вираз зверху: 4 + 6 = 10
     setExpression(`${prevValue} ${operation} ${display} = ${value}`);
     // Оновлюємо екран
     setDisplay(value);
-    setPrevValue(null);
-    setOperation(null);
-    setOverwrite(true); // поточна операція очищається
+    setPrevValue(null); // поточна операція очищається
+    setOperation(null); // поточна операція очищається
+    setOverwrite(true); // перезаписуй попереднє число
   };
 
   const clear = () => {
-    console.log("🧹 Очищення калькулятора");
+    // console.log("🧹 Очищення калькулятора");
     setDisplay("0");
     setPrevValue(null);
     setOperation(null);
@@ -120,7 +119,6 @@ function App() {
   };
   const handleBackspace = () => {
     if (overwrite) return; // якщо щойно було "=" або операція — нічого не видаляємо
-
     if (display.length === 1) {
       setDisplay("0");
     } else {
@@ -135,20 +133,15 @@ function App() {
     }
   };
   return (
-    <div className="app-container">
-      <button className="theme-toggle" onClick={toggleTheme}>
-        {theme === "light" ? "🌙Темна тема" : "☀️Світла тема"}
-      </button>
-      {/* <button
-        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        className="theme-toggle">
-        {theme === "dark" ? "🌙Темна тема" : "☀️Світла тема"}
-      </button> */}
+    <div className={`app-container ${theme}`}>
       <div className="calculator">
-        <div className="expression">
-          {expression || `${prevValue ?? ""} ${operation ?? ""}`}
+        <div className="display">
+          <div className="expression-line">
+            {expression || `${prevValue ?? ""} ${operation ?? ""}`}
+          </div>
+          <div className="main-display">{display}</div>
         </div>
-        <div className="display">{display}</div>
+
         <div className="buttons">
           <button onClick={clear} className="btn-clear">
             C
@@ -196,14 +189,12 @@ function App() {
           </button>
         </div>
 
-        {/* 🪄 Додаткова панель станів */}
-        {/* <div className="debug">
-        <h3>🧩 Поточні стани:</h3>
-        <p><b>display:</b> {display}</p>
-        <p><b>prevValue:</b> {prevValue ?? "—"}</p>
-        <p><b>operation:</b> {operation ?? "—"}</p>
-        <p><b>overwrite:</b> {overwrite.toString()}</p>
-      </div> */}
+        {/* 🔹 Подовгаста кнопка-перемикач теми */}
+        <div className="theme-toggle" onClick={toggleTheme}>
+          <div
+            className={`toggle-thumb ${theme === "light" ? "light" : "dark"}`}
+          ></div>
+        </div>
       </div>
     </div>
   );

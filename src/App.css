@@ -1,66 +1,98 @@
-.app-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh; /* на всю висоту вікна */
-  gap: 20px;
-  transition: background-color 0.5s ease, color 0.5s ease;
-}
-body {
-  background: #807b7b;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  transition: background-color 0.5s ease, color 0.5s ease;
-}
-/* 🌞 Світла тема */
-body.light {
-  background-color: #fff;
-  color: #222;
+:root {
+  /* 🔸 Основні кольори для світлої теми за замовчуванням */
+  --bg-color: #e0f7f4;
+  --calc-bg: #579187;
+  --btn-bg: #34b09c;
+  --btn-text: #006655;
+  --btn-hover: #baf0e4;
+  --accent: #469b60;
+  --display-bg: #ace9d5;
+  --display-text: #173e38;
+  --glow: 0 0 12px rgba(0, 255, 170, 0.6);
 }
 
 /* 🌙 Темна тема */
 body.dark {
-  background-color: #343333;
-  color: #f1f1f1;
-}
-.calculator {
-  width: 320px;
-  margin: 40px auto;
-  /* background: #222; */
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.5s ease, box-shadow 0.5s ease;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.8s ease forwards;
-  animation-delay: 0.4s;
-}
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-/* 🌞 Світла тема */
-body.light .calculator {
-  background-color: #9b9a9a;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --bg-color: #1e1c1c;
+  --calc-bg: #2b2b2b;
+  --btn-bg: #333;
+  --btn-text: #b3ffe0;
+  --btn-hover: #3a3a3a;
+  --accent: #66ffcc;
+  --display-bg: #000;
+  --display-text: #66ffcc;
+  --glow: 0 0 15px rgba(39, 58, 52, 0.8);
 }
 
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--bg-color);
+}
 /* 🌙 Темна тема */
+.app-container.dark {
+  background-color: #333931;
+  color: #f5f5f5;
+}
+
+/* 🌞 Світла тема */
+.app-container.light {
+  background-color: #a2e7cd;
+  color: #1e3111;
+}
+
+/* Змінні кольорів для обох тем */
+body.light {
+  --bg-color: #f2f2f2;
+  --calc-bg: #d6d6d6;
+}
+body.dark {
+  --bg-color: #1b1b1b;
+  --calc-bg: #2c2c2c;
+}
+
+.calculator {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--calc-bg);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+  animation: breatheGlow 6s ease-in-out infinite;
+}
+
+body.light .calculator {
+  --calc-bg: #d0cfcf;
+}
+
 body.dark .calculator {
-  background-color: #1e1e1e;
-  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.05);
+  --calc-bg: #2a2a2a;
+  animation: breatheGlow 5.5s ease-in-out infinite;
+}
+@keyframes breatheGlow {
+  0% {
+    box-shadow: 0 0 15px rgba(0, 255, 170, 0.25),
+      0 0 30px rgba(0, 255, 170, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(0, 255, 170, 0.5), 0 0 50px rgba(0, 255, 170, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(0, 255, 170, 0.25),
+      0 0 30px rgba(0, 255, 170, 0.15);
+  }
 }
 .expression {
   color: #f0e9e9;
@@ -70,16 +102,42 @@ body.dark .calculator {
   margin-bottom: 5px;
 }
 .display {
-  background: #000;
-  color: #0f0;
+  background: var(--display-bg);
+  color: var(--display-text);
   text-align: right;
   padding: 15px;
   font-size: 2rem;
   border-radius: 8px;
   margin-bottom: 15px;
   min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  box-shadow: var(--glow);
+  transition: background 0.4s ease, color 0.4s ease;
+}
+.expression-line {
+  font-size: 0.9rem;
+  color: #9f9f9f;
+  margin-bottom: 5px;
 }
 
+.main-value {
+  font-size: 2rem;
+  color: rgb(87, 144, 87);
+}
+.mini-expression {
+  color: #aaa;
+  font-size: 0.9rem;
+  min-height: 20px;
+}
+
+.main-display {
+  color: rgb(43, 112, 43);
+  font-size: 2rem;
+  font-weight: bold;
+}
 .buttons {
   display: grid;
   grid-template-columns: repeat(4, 60px);
@@ -92,40 +150,32 @@ button {
   font-size: 1.2rem;
   border: none;
   border-radius: 5px;
-  background: #444;
-  color: #c57417;
+  background: var(--btn-bg);
+  color: var(--btn-text);
   cursor: pointer;
-  transition: background 0.2s;
   transition: all 0.15s ease-in-out;
 }
 
 button:hover {
-  /* background: #666; */
-  background-color: #555;
+  background-color: var(--btn-hover);
   transform: scale(1.05);
 }
 button.active {
-  transform: scale(0.95);
-  background-color: #99854e; /* яскраво-зелений */
+  background-color: var(--accent);
   color: black;
   font-weight: bold;
-  box-shadow: 0 0 8px #b79116;
-  transition: 0.2s ease;
-  transform: scale(1.07);
+  box-shadow: 0 0 10px var(--accent);
 }
 
-button.active:hover {
-  transform: scale(1.05);
-}
 /* 🔹 Кнопка дорівнює (=) виділяється */
 button.equals {
-  background: #3a7933;
-  color: black;
+  background: var(--accent);
+  color: #003326;
   font-weight: bold;
 }
 
 button.equals:hover {
-  background: #5ea97e;
+  background: #00e6b8;
 }
 button.backspace {
   background-color: #cf6e6e;
@@ -136,87 +186,43 @@ button.backspace {
 button.backspace:hover {
   background-color: #ff7777;
 }
-/* 🔘 Кнопка перемикача теми */
+
 .theme-toggle {
-  padding-left: 5px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-top: 16px;
-  background: var(--btn-bg, rgba(255, 255, 255, 0.15));
-  border: none;
-  backdrop-filter: blur(8px); /* ефект скла */
-  padding: 10px 14px;
+  position: absolute;
+  right: 22px;
+  bottom: 35px; /* піднято вище, щоб не торкалось "=" */
+  width: 120px;
+  height: 34px;
+  background: linear-gradient(180deg, #555, #333);
+  border-radius: 40px;
+  cursor: pointer;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  /* ///// */
+  justify-content: space-between;
+  padding: 0 6px;
+  transition: all 0.4s ease;
+}
+
+/* маленький кружечок усередині */
+.toggle-thumb {
+  width: 26px;
+  height: 26px;
+  background: #2e2828;
   border-radius: 50%;
-  font-size: 1.3rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  animation: fadeDown 0.8s ease forwards;
+  transition: all 0.4s ease;
 }
 
-/* .theme-toggle {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  border-radius: 12px;
-  padding-left: 5px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-   margin-bottom: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  color: inherit;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(6px);
-  z-index: 2;
-  position: relative; 
-} */
-
-.theme-toggle:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-  /* background-color: rgba(255, 255, 255, 0.15);
-  transform: scale(1.05);
-  animation: pulse 1.8s ease-in-out infinite; */
-}
-/* @keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0px rgba(255, 255, 255, 0);
-  }
-  50% {
-    transform: scale(1.07);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0px rgba(255, 255, 255, 0);
-  }
-} */
-body.light .theme-toggle {
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px solid rgba(0, 0, 0, 0.3);
-}
-body.light .theme-toggle:hover {
-  /* background-color: rgba(0, 0, 0, 0.01);
-  border: 2px solid rgba(0, 0, 0, 0.3); */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+.toggle-thumb.light {
+  background: #c1f0a8;
+  box-shadow: 0 0 10px var(--accent);
+  transform: translateX(82px);
 }
 
-body.dark .theme-toggle:hover {
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-}
-/* .....додала при останній зміні */
-body.dark .theme-toggle:hover {
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+/* Темна тема */
+.toggle-thumb.dark {
+  background: #1b1a1a;
+  box-shadow: 0 0 10px var(--accent);
+  transform: translateX(0);
 }
